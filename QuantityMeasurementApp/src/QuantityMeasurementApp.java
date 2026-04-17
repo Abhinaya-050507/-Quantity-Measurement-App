@@ -1,9 +1,11 @@
 public class QuantityMeasurementApp {
 
-    // ===== ENUM for Units =====
+    // ===== ENUM for Units (Base: FEET) =====
     public enum LengthUnit {
         FEET(1.0),
-        INCH(1.0 / 12.0); // 1 inch = 1/12 feet
+        INCH(1.0 / 12.0),
+        YARD(3.0), // 1 yard = 3 feet
+        CENTIMETER(0.0328084); // 1 cm = 0.0328084 feet
 
         private final double toFeetFactor;
 
@@ -16,7 +18,7 @@ public class QuantityMeasurementApp {
         }
     }
 
-    // ===== QuantityLength Class =====
+    // ===== Generic QuantityLength Class =====
     public static class QuantityLength {
         private final double value;
         private final LengthUnit unit;
@@ -29,27 +31,22 @@ public class QuantityMeasurementApp {
             this.unit = unit;
         }
 
-        // Convert to base unit (feet)
         private double toFeet() {
             return unit.toFeet(value);
         }
 
         @Override
         public boolean equals(Object obj) {
-            // Reflexive
             if (this == obj) return true;
-
-            // Null & type check
             if (obj == null || getClass() != obj.getClass()) return false;
 
             QuantityLength other = (QuantityLength) obj;
 
-            // Compare after conversion
             return Double.compare(this.toFeet(), other.toFeet()) == 0;
         }
     }
 
-    // ===== Static Comparison Method =====
+    // ===== Static Compare Method =====
     public static boolean compare(double v1, LengthUnit u1, double v2, LengthUnit u2) {
         QuantityLength q1 = new QuantityLength(v1, u1);
         QuantityLength q2 = new QuantityLength(v2, u2);
@@ -59,12 +56,8 @@ public class QuantityMeasurementApp {
     // ===== Main Method =====
     public static void main(String[] args) {
 
-        boolean result1 = compare(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCH);
-        System.out.println("Input: Quantity(1.0, feet) and Quantity(12.0, inch)");
-        System.out.println("Output: Equal (" + result1 + ")");
-
-        boolean result2 = compare(1.0, LengthUnit.INCH, 1.0, LengthUnit.INCH);
-        System.out.println("Input: Quantity(1.0, inch) and Quantity(1.0, inch)");
-        System.out.println("Output: Equal (" + result2 + ")");
+        System.out.println(compare(1.0, LengthUnit.YARD, 3.0, LengthUnit.FEET)); // true
+        System.out.println(compare(1.0, LengthUnit.YARD, 36.0, LengthUnit.INCH)); // true
+        System.out.println(compare(1.0, LengthUnit.CENTIMETER, 0.393701, LengthUnit.INCH)); // true
     }
 }
